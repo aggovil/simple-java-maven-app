@@ -29,12 +29,12 @@ pipeline {
             }
         }
         
-    stage('Artifactory configuration') {
+    stage('Artifactory Configuration') {
         steps {
             rtServer (
                 id: "ARTIFACTORY_SERVER",
                 url: "http://54.185.147.65:8081/artifactory",
-                credentialsID: "Artifatory-Id"
+                credentialsId: "Artifatory-Id"
                 )
             
             rtMavenDeployer (
