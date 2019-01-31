@@ -34,7 +34,7 @@ pipeline {
             rtServer (
                 id: "ARTIFACTORY_SERVER",
                 url: "http://54.185.147.65:8081/artifactory",
-                credentialsID: "Admin"
+                credentialsID: "Artifatory-Id"
                 )
             
             rtMavenDeployer (
