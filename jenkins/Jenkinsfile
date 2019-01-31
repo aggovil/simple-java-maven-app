@@ -22,7 +22,57 @@ pipeline {
             }
         }
     }
-    stage('Deploy') {
+   
+        stage ('Clone') {
+            steps {
+                git branch: 'master', url: "https://github.com/aggovil/simple-java-maven-app.git"
+            }
+        }
+        
+    stage('Artifactory configuration') {
+        steps {
+            rtServer (
+                id: "ARTIFACTORY_SERVER",
+                url: "http://54.185.147.65:8081/artifactory",
+                credentialsID: "Admin"
+                )
+            
+            rtMavenDeployer (
+                id: "MAVEN_DEPLOYER",
+                serverId: "ARTIFACTORY_SERVER",
+                releaseRepo: "libs-release-local",
+                snapshotRepo: "libs-snapshot-local"
+                )
+            rtMavenResolver (
+                id: "MAVEN_RESOLVER",
+                serverId: "ARTIFACTORY_SERVER",
+                releaseRepo: "libs-release",
+                snapshotRepo: "libs-snapshot"
+                )
+        }
+    }
+               
+        stage ('Exec Maven') {
+            steps {
+                rtMavenRun (
+                    tool: 'Maven 3.6.0', // Tool name for Jenkins configuration
+                    pom: 'pom.xml',
+                    goals:'clean install',
+                    deployerId: "MAVEN_DEPLOYER",
+                    resolverId: "MAVEN_RESOLVER"
+                    )
+            }
+        }
+        
+        stage('Publish build info') {
+            steps {
+                rtPublishBuilsInfo (
+                    serverId: "ARTIFATORY_SERVER"
+                    )
+            }
+        }
+        
+              stage('Deploy') {
         steps {
             // sh './jenkins/scripts/deliver.sh'
             //sh 'java -jar target/my-app-1.0-SNAPSHOT.jar'
@@ -30,5 +80,7 @@ pipeline {
             sh 'ssh -i /tmp/mypem.pem centos@54.201.149.191 java -jar /tmp/my-app-1.0-SNAPSHOT.jar'
         }
     }
+                
+                
 }
 }
