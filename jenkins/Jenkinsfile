@@ -21,9 +21,31 @@ pipeline {
                 junit 'target/surefire-reports/*.xml'
             }
         }
+            
+             stage('SCM') {
+
+    git 'https://github.com/foo/bar.git'
+
+  }
+
+  stage('SonarQube analysis') {
+      steps {
+
+    withSonarQubeEnv('Sonar') {
+
+      // requires SonarQube Scanner for Maven 3.2+
+
+      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:Sonar'
     }
-   
-        stage ('Clone') {
+
+    }
+
+  }
+
+}
+    }
+   //Comments start here
+        /*stage ('Clone') {
             steps {
                 git branch: 'master', url: "https://github.com/aggovil/simple-java-maven-app.git"
             }
@@ -79,7 +101,7 @@ pipeline {
             //sh 'scp -o StrictHostKeyChecking=no -i /tmp/mypem.pem target/my-app-1.0-SNAPSHOT.jar centos@54.201.149.191:/tmp/'
             //sh 'ssh -i /tmp/mypem.pem centos@54.201.149.191 java -jar /tmp/my-app-1.0-SNAPSHOT.jar'
         }
-    }
+    }*/
                 
                 
 }
