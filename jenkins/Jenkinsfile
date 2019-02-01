@@ -41,9 +41,6 @@ pipeline {
     }
 
   }
-
-}
-    }
    //Comments start here
         /*stage ('Clone') {
             steps {
